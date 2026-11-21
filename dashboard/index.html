@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Token Radar — make.fun</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="logo-mark">⚡</span>
+        <h1>Token Radar</h1>
+        <span class="badge version">radar-fitted-v2</span>
+      </div>
+      <nav class="site-nav">
+        <a href="#/" class="nav-link" id="nav-board">Board</a>
+        <a href="#/sandbox" class="nav-link" id="nav-sandbox">Model Sandbox</a>
+        <a href="#/research" class="nav-link" id="nav-research">Research & Notes</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- KPI Strip -->
+    <section class="kpi-strip" id="kpi-strip">
+      <div class="kpi-card">
+        <span class="kpi-label">Snapshot Date</span>
+        <span class="kpi-value" id="kpi-date">2026-11-14</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Universe Scope</span>
+        <span class="kpi-value" id="kpi-universe">758 protocols / 40 watch / 200 ranked</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Fitted Model (R² = 0.19)</span>
+        <span class="kpi-value code-font">log(mcap) = 3.025 + 0.522 × log(TVL)</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">LOO Error & Share</span>
+        <span class="kpi-value" id="kpi-loo">Median error 3.5× (32.8% within 2×)</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Bootstrap Slope Band</span>
+        <span class="kpi-value code-font" id="kpi-band">[0.43, 0.64] (129 comps)</span>
+      </div>
+    </section>
+
+    <!-- View Container -->
+    <div id="view-container">
+      <!-- Board View -->
+      <section id="view-board" class="view-section active">
+        <div class="controls-bar">
+          <div class="search-box">
+            <input type="text" id="search-input" placeholder="Search protocol name or slug..." aria-label="Search protocols">
+          </div>
+          <div class="filter-group">
+            <select id="category-select" aria-label="Filter by category">
+              <option value="">All Categories</option>
+            </select>
+          </div>
+          <div class="verdict-buttons" role="group" aria-label="Verdict filter">
+            <button class="v-btn active" data-verdict="ALL">ALL</button>
+            <button class="v-btn farm" data-verdict="FARM">FARM</button>
+            <button class="v-btn thin" data-verdict="THIN">THIN</button>
+            <button class="v-btn skip" data-verdict="SKIP">SKIP</button>
+          </div>
+          <div class="toggle-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="watchlist-toggle"> Watchlist only (40)
+            </label>
+          </div>
+        </div>
+
+        <div class="table-info">
+          <span id="row-count">Showing 200 of 200 protocols</span>
+          <span class="tip">Click numeric headers to sort ascending/descending.</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="radar-table" id="board-table">
+            <thead>
+              <tr>
+                <th data-sort="rank" class="sortable">Rank ↕</th>
+                <th data-sort="name" class="sortable">Protocol / Category ↕</th>
+                <th data-sort="tvl_usd" class="sortable num">TVL ($) ↕</th>
+                <th data-sort="change_7d" class="sortable num">7d Change ↕</th>
+                <th data-sort="token_odds" class="sortable num">Token Odds ↕</th>
+                <th data-sort="implied_value_usd" class="sortable num">Implied Value ($) ↕</th>
+                <th data-sort="verdict" class="sortable">Verdict ↕</th>
+              </tr>
+            </thead>
+            <tbody id="board-tbody">
+              <!-- Populated by app.js -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Live-Token Anchors Section -->
+        <section class="anchors-section">
+          <h3>Live-Token Anchors (Comps the Curve Was Fitted On)</h3>
+          <p class="section-desc">24 traded tokens used to establish the baseline valuation curve. Comparison of TVL vs Market Cap.</p>
+          <div class="table-responsive">
+            <table class="radar-table anchors-table" id="anchors-table">
+              <thead>
+                <tr>
+                  <th>Token Name</th>
+                  <th>Category</th>
+                  <th>Chains</th>
+                  <th class="num">TVL ($)</th>
+                  <th class="num">Market Cap ($)</th>
+                  <th class="num">Mcap / TVL</th>
+                  <th class="num">7d Change</th>
+                </tr>
+              </thead>
+              <tbody id="anchors-tbody">
+                <!-- Populated by app.js -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <!-- Detail View -->
+      <section id="view-detail" class="view-section">
+        <div class="detail-header">
+          <a href="#/" class="back-link">← Back to Board</a>
+        </div>
+        <div id="detail-content">
+          <!-- Populated by app.js -->
+        </div>
+      </section>
+
+      <!-- Sandbox View -->
+      <section id="view-sandbox" class="view-section">
+        <h2>Model Valuation Sandbox</h2>
+        <p class="section-desc">Test custom protocol parameters against the published model formula and observe live arithmetic recomputation.</p>
+        
+        <div class="sandbox-grid">
+          <div class="sandbox-form panel">
+            <h3>Parameters</h3>
+            <div class="input-group">
+              <label for="sb-tvl">TVL ($ Millions):</label>
+              <input type="number" id="sb-tvl" value="100" min="0.1" step="1">
+            </div>
+            <div class="input-group">
+              <label for="sb-change">7d TVL Change (%):</label>
+              <input type="number" id="sb-change" value="2.5" step="0.1">
+            </div>
+            <div class="input-group">
+              <label for="sb-age">Protocol Age / No-Token Days:</label>
+              <input type="number" id="sb-age" value="365" min="0" step="1">
+            </div>
+            <div class="input-group">
+              <label for="sb-odds">Token Odds Estimate (0.02 - 0.95): <span id="sb-odds-val">0.60</span></label>
+              <input type="range" id="sb-odds" min="0.02" max="0.95" step="0.01" value="0.60">
+            </div>
+          </div>
+
+          <div class="sandbox-output panel">
+            <h3>Live Arithmetic & Recomputation</h3>
+            <div class="calc-steps" id="sandbox-steps">
+              <!-- Populated by app.js -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Research Notes View -->
+      <section id="view-research" class="view-section">
+        <h2>Research & Methodology Notes</h2>
+        <div class="research-content panel">
+          <h3>1. Fitted Valuation Curve</h3>
+          <p>The token radar model establishes a baseline valuation framework for pre-token protocols by regressing historical market capitalization against Total Value Locked (TVL) across 129 traded comparables. The logarithmic regression yields the published formula: log10(mcap) = 3.025 + 0.522 × log10(TVL). This sub-linear exponent (0.522) reflects diminishing marginal market cap returns as protocol TVL scales to extreme magnitudes.</p>
+
+          <h3>2. Held-Out Tests & Error Metrics</h3>
+          <p>Model robustness was rigorously validated using Leave-One-Out (LOO) cross-validation and split-sample testing. The LOO median absolute log error is 0.5468 (translating to a multiplicative factor error of approximately 3.5×), with 32.8% of predictions falling within a 2× error band. Split-sample validation confirms consistent out-of-sample error characteristics (0.5425 median absolute log error).</p>
+
+          <h3>3. Token Odds & Growth Multipliers</h3>
+          <p>Raw baseline valuations are adjusted using protocol-specific factors including longevity (age in days), chain footprint breadth, category risk weights, and recent 7-day TVL momentum. Token odds represent the estimated empirical probability of successful token launch and airdrop distribution based on historic category behavior and funding milestones.</p>
+
+          <h3>4. Verdict Classification Formula</h3>
+          <p>Protocols are classified into actionable verdicts based on expected value (EV) per $1,000 farmed: <strong>EV = implied_value_usd × 0.05 (assumed airdrop share) × (1000 / 10,000,000) (farmer share of $10M total farmed capital) = implied × 5e-6</strong>. Assumptions: 5% airdrop allocation, $10M total farmed capital pool, $1,000 farmer allocation. <strong>FARM</strong> when EV > $50 (implied > $10M; expected ~22 protocols); <strong>THIN</strong> when $10 ≤ EV ≤ $50 (implied $2M–$10M; expected ~131 protocols); and <strong>SKIP</strong> when EV < $10 (implied < $2M; expected ~47 protocols).</p>
+
+          <h3>5. Key Model Limitations</h3>
+          <p>An R² of 0.194 demonstrates that TVL alone explains less than 20% of valuation variance in crypto assets. Governance structure, tokenomics utility design, team reputation, and macro liquidity conditions exert massive influence not captured purely on-chain. Token odds are rough logistic approximations, and estimated farm step costs are point-in-time reflections.</p>
+
+          <h3>6. Snapshot & Market Volatility Notice</h3>
+          <p>All data within this radar is snapshotted as of <strong>2026-11-14</strong> via DefiLlama and associated indexers. Crypto markets exhibit extreme volatility; TVL figures, ranking positions, and implied valuations shift rapidly in live trading environments. Use this dashboard as an analytical decision-support tool rather than financial advice.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>make.fun token-radar-01 • Snapshot 2026-11-14 • Built with vanilla CSS & JS</p>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
